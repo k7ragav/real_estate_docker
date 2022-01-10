@@ -47,13 +47,6 @@ def insert_result_in_table(result):
     mycursor.executemany(sql_query, result)
     mydb.commit()
 
-def truncate_table():
-    mydb, mycursor = sql_connection()
-    sql_query = "TRUNCATE TABLE movie_db.netflix_top10"
-
-    mycursor.execute(sql_query)
-    mydb.commit()
-
 def select_table():
     mydb, mycursor = sql_connection()
     sql_query = "select url from real_estate_db.pararius"
@@ -123,6 +116,11 @@ def whatsapp_message(url_list):
         body=body_message,
         to='whatsapp:+31626654343'
     )
+    message = client.messages.create(
+        from_='whatsapp:+14155238886',
+        body=body_message,
+        to='whatsapp:+31644273034'
+    )
 
 def main():
     # urls = pararius_get_urls_list()
@@ -132,7 +130,8 @@ def main():
     urls_final = [result[0] for result in results if result[0] not in urls_sql]
     result_final = [result for result in results if result[0] not in urls_sql]
     insert_result_in_table(result_final)
-    whatsapp_message(urls_final)
+    if urls_final != []:
+        whatsapp_message(urls_final)
 
 if __name__ == "__main__":
     main()
