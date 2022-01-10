@@ -3,7 +3,9 @@ import re
 from typing import Any, Dict, List
 import time
 import mysql.connector
+import ssl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 import requests
 
