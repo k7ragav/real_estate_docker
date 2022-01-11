@@ -165,11 +165,11 @@ def whatsapp_message(url_list):
         body=body_message,
         to='whatsapp:+31626654343'
     )
-    # message = client.messages.create(
-    #     from_='whatsapp:+14155238886',
-    #     body=body_message,
-    #     to='whatsapp:+31644273034'
-    # )
+    message = client.messages.create(
+        from_='whatsapp:+14155238886',
+        body=body_message,
+        to='whatsapp:+31644273034'
+    )
 
 def main():
     # urls = pararius_get_urls_list()
