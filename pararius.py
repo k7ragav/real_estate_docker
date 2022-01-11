@@ -126,7 +126,8 @@ def pararius_get_data(urls):
                 result = (result_dic["url"], result_dic['type'], result_dic['street'], result_dic['city'], result_dic['postalCode'],
                           result_dic['rooms'], result_dic['surfaceArea'],result_dic['offeredSince'],result_dic['price'])
                 result_list.append(result)
-        except:
+        except Exception as e:
+            print(e)
             continue
     return result_list
 
