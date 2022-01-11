@@ -17,11 +17,7 @@ from twilio.rest import Client
 from dotenv import load_dotenv
 from pathlib import Path
 
-dotenv_path = Path('twilio.env')
-load_dotenv(dotenv_path=dotenv_path)
 
-TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 
 ua = UserAgent()
 ua_final = ua.random
@@ -115,6 +111,12 @@ def pararius_get_data(urls):
     return result_list
 
 def whatsapp_message(url_list):
+    
+    dotenv_path = Path('twilio.env')
+    load_dotenv(dotenv_path=dotenv_path)
+
+    TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+    TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 
     account_sid = TWILIO_ACCOUNT_SID
     auth_token = TWILIO_AUTH_TOKEN
