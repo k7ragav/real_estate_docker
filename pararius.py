@@ -155,7 +155,7 @@ def whatsapp_message(url_list):
 
     account_sid = TWILIO_ACCOUNT_SID
     auth_token = TWILIO_AUTH_TOKEN
-    print(account_sid)
+    # print(account_sid)
     client = Client(account_sid, auth_token)
 
     body_message = """ Hi. You can click on {0} """.format("\n".join(url_list))
@@ -165,11 +165,11 @@ def whatsapp_message(url_list):
         body=body_message,
         to='whatsapp:+31626654343'
     )
-    message = client.messages.create(
-        from_='whatsapp:+14155238886',
-        body=body_message,
-        to='whatsapp:+31644273034'
-    )
+    # message = client.messages.create(
+    #     from_='whatsapp:+14155238886',
+    #     body=body_message,
+    #     to='whatsapp:+31644273034'
+    # )
 
 def main():
     # urls = pararius_get_urls_list()
