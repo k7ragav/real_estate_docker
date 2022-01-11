@@ -19,17 +19,18 @@ from pathlib import Path
 
 
 
+
+
+rex_json = re.compile(
+        re.escape('<script type="application/ld+json">') + '(.+)' + re.escape('</script>'),
+        re.DOTALL,
+    )
 ua = UserAgent()
 ua_final = ua.random
-rex_url = re.compile(r'href="/(?:huis|appartement)-te-(?:koop|huur)/[^"]+')
-rex_json = re.compile(
-    re.escape('<script type="application/ld+json">') + '(.+)' + re.escape('</script>'),
-    re.DOTALL,
-)
 ROOT_URL = 'https://www.pararius.nl'
 HEADERS = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-# noqa
+    # noqa
     'accept-encoding': 'gzip, deflate, br',
     'accept-language': 'en-US,en;q=0.9,ru;q=0.8',
     'cache-control': 'max-age=0',
@@ -64,19 +65,35 @@ def select_table():
 
 
 def get_urls(url: str) -> List[str]:
+    ua = UserAgent()
+    ua_final = ua.random
+    rex_url = re.compile(r'href="/(?:huis|appartement)-te-(?:koop|huur)/[^"]+')
+    ROOT_URL = 'https://www.pararius.nl'
+    HEADERS = {
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        # noqa
+        'accept-encoding': 'gzip, deflate, br',
+        'accept-language': 'en-US,en;q=0.9,ru;q=0.8',
+        'cache-control': 'max-age=0',
+        'referer': ROOT_URL,
+        'user-agent': ua_final,  # noqa
+    }
     r = requests.get(url, headers=HEADERS)
     r.raise_for_status()
     return [f'{ROOT_URL}{u[6:]}' for u in rex_url.findall(r.text)]
 
 
 def get_info(url: str) -> Dict[str, Any]:
+
     if not url.startswith(ROOT_URL):
         raise ValueError('invalid URL')
     r = requests.get(url, headers=HEADERS)
     r.raise_for_status()
     match = rex_json.search(r.text)
     if not match:
+        print(url)
         raise ValueError('cannot find JSON data on page')
+
     raw = match.group(1)
     return json.loads(raw.splitlines()[1].strip())
 
@@ -92,26 +109,29 @@ def pararius_get_urls_list():
 def pararius_get_data(urls):
     result_list = []
     for url in urls:
-        info = get_info(url)
-        if int(info['floorSize']['value']) >= 75:
-            result_dic = {
-                "url" : info['@id'],
-                "type" : info["@type"][0],
-                "street": info['address']['streetAddress'],
-                "city": info['address']['addressLocality'],
-                "postalCode": info['address']['postalCode'],
-                "rooms":info['numberOfRooms'][0]['value'],
-                "surfaceArea": info['floorSize']['value'],
-                'offeredSince': info['offers']['validFrom'],
-                'price': info['offers']['price']
-            }
-            result = (result_dic["url"], result_dic['type'], result_dic['street'], result_dic['city'], result_dic['postalCode'],
-                      result_dic['rooms'], result_dic['surfaceArea'],result_dic['offeredSince'],result_dic['price'])
-            result_list.append(result)
+        try:
+            info = get_info(url)
+            if int(info['floorSize']['value']) >= 75:
+                result_dic = {
+                    "url" : info['@id'],
+                    "type" : info["@type"][0],
+                    "street": info['address']['streetAddress'],
+                    "city": info['address']['addressLocality'],
+                    "postalCode": info['address']['postalCode'],
+                    "rooms":info['numberOfRooms'][0]['value'],
+                    "surfaceArea": info['floorSize']['value'],
+                    'offeredSince': info['offers']['validFrom'],
+                    'price': info['offers']['price']
+                }
+                result = (result_dic["url"], result_dic['type'], result_dic['street'], result_dic['city'], result_dic['postalCode'],
+                          result_dic['rooms'], result_dic['surfaceArea'],result_dic['offeredSince'],result_dic['price'])
+                result_list.append(result)
+        except:
+            continue
     return result_list
 
 def whatsapp_message(url_list):
-    
+
     dotenv_path = Path('twilio.env')
     load_dotenv(dotenv_path=dotenv_path)
 
