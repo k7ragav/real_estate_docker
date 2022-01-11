@@ -1,10 +1,11 @@
 import json
+import os
 import re
 from typing import Any, Dict, List
 import time
 import mysql.connector
 import ssl
-
+import dotenv
 ssl._create_default_https_context = ssl._create_unverified_context
 
 import requests
@@ -13,6 +14,14 @@ from fake_useragent import UserAgent
 
 from twilio.rest import Client
 
+from dotenv import load_dotenv
+from pathlib import Path
+
+dotenv_path = Path('twilio.env')
+load_dotenv(dotenv_path=dotenv_path)
+
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 
 ua = UserAgent()
 ua_final = ua.random
@@ -107,8 +116,8 @@ def pararius_get_data(urls):
 
 def whatsapp_message(url_list):
 
-    account_sid = 'ACd41b288e7bdd5364da5f7d366f4b1a0a'
-    auth_token = '70fcaf9e29983d820ce6831614b2e212'
+    account_sid = TWILIO_ACCOUNT_SID
+    auth_token = TWILIO_AUTH_TOKEN
     client = Client(account_sid, auth_token)
 
     body_message = """ Hi. You can click on {0} """.format("\n".join(url_list))
@@ -118,11 +127,11 @@ def whatsapp_message(url_list):
         body=body_message,
         to='whatsapp:+31626654343'
     )
-    message = client.messages.create(
-        from_='whatsapp:+14155238886',
-        body=body_message,
-        to='whatsapp:+31644273034'
-    )
+    # message = client.messages.create(
+    #     from_='whatsapp:+14155238886',
+    #     body=body_message,
+    #     to='whatsapp:+31644273034'
+    # )
 
 def main():
     # urls = pararius_get_urls_list()
