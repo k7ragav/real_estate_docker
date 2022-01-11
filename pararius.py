@@ -155,6 +155,7 @@ def whatsapp_message(url_list):
 
     account_sid = TWILIO_ACCOUNT_SID
     auth_token = TWILIO_AUTH_TOKEN
+    print(account_sid)
     client = Client(account_sid, auth_token)
 
     body_message = """ Hi. You can click on {0} """.format("\n".join(url_list))
