@@ -146,9 +146,9 @@ def pararius_get_data(urls):
 
 def whatsapp_message(url_list):
 
-    dotenv_path = Path('./twilio.env')
-    print(dotenv_path)
-    load_dotenv(dotenv_path=dotenv_path)
+    # dotenv_path = Path('./twilio.env')
+    # print(dotenv_path)
+    load_dotenv()
 
     TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
     TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
