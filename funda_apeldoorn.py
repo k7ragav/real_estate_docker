@@ -6,15 +6,10 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 import requests
 
-from fake_useragent import UserAgent
-
 from twilio.rest import Client
 from dotenv import load_dotenv
 import os
 
-ua = UserAgent()
-ua_final = ua.random
-ROOT_URL = 'https://www.funda.nl'
 
 HEADERS = {
         'Authority': 'www.funda.nl',
