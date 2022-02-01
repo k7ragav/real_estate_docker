@@ -97,7 +97,7 @@ def main():
     city = 'apeldoorn'
     result_number_last_known = check_last_known_number()
     # result_number_funda = get_funda_data(city=city)
-    result_number_funda = 110
+    result_number_funda = 112
     if result_number_funda > result_number_last_known:
         update_table(result_number_funda,city=city)
         whatsapp_message(result_number=result_number_funda, city=city)
