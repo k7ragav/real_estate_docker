@@ -9,7 +9,8 @@ import requests
 from fake_useragent import UserAgent
 
 from twilio.rest import Client
-
+from dotenv import load_dotenv
+import os
 
 ua = UserAgent()
 ua_final = ua.random
@@ -78,10 +79,10 @@ def get_funda_data(city):
     return int(result_number)
 
 def whatsapp_message(result_number, city):
-
-    account_sid = 'ACd41b288e7bdd5364da5f7d366f4b1a0a'
-    auth_token = 'd9b35f196e4bc8b3649e9a68684d5aa9'
-    client = Client(account_sid, auth_token)
+    load_dotenv()
+    TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+    TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
     body_message = f" Hi. The results in in funda for {city} is {result_number}"
 
