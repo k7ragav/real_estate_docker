@@ -96,8 +96,7 @@ def main():
     # urls = pararius_get_urls_list()
     city = 'apeldoorn'
     result_number_last_known = check_last_known_number()
-    # result_number_funda = get_funda_data(city=city)
-    result_number_funda = 112
+    result_number_funda = get_funda_data(city=city)
     if result_number_funda > result_number_last_known:
         update_table(result_number_funda,city=city)
         whatsapp_message(result_number=result_number_funda, city=city)
