@@ -47,7 +47,7 @@ def check_last_known_number():
     mycursor.execute(sql_query)
     results = mycursor.fetchall()
     recent_result_number = [result[0] for result in results]
-    return recent_result_number[0]
+    return str(recent_result_number[0])
 
 def update_table(result_number, city):
     mydb, mycursor = sql_connection()
@@ -59,47 +59,50 @@ def update_table(result_number, city):
 
 
 def get_funda_data(city):
-
-    url = f"https://www.funda.nl/koop/{city}/300000-550000/100+woonopp/woonhuis/"
+    url = f"https://www.funda.nl/koop/{city}/300000-550000/100+woonopp/woonhuis/sorteer-datum-af/"
 
     html_content = requests.get(url, headers=
-        HEADERS).content
+    HEADERS).content
 
     soup = BeautifulSoup(html_content, "html.parser")
-    table_div = soup.find_all("div", attrs={"class": "search-content-description fd-flex"})
-    for i in table_div:
-        header_text = i.text
-        result_number = header_text.split("koopwoningen")[0].strip()
+    table_div = soup.find_all("div", attrs={"class": "search-result__header-title-col"})
+    for i in table_div[0:1]:
+        first_result_url = str(i.find('a')['href'])
 
-    return int(result_number)
+    return first_result_url
 
-def whatsapp_message(result_number, city):
+def whatsapp_message(city):
     load_dotenv()
     TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
     TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
-    body_message = f" Hi. The results in in funda for {city} is {result_number}"
+    body_message = f" Hi. There might be new results in funda for {city}"
 
     message = client.messages.create(
         from_='whatsapp:+14155238886',
         body=body_message,
         to='whatsapp:+31626654343'
     )
-    # message = client.messages.create(
-    #     from_='whatsapp:+14155238886',
-    #     body=body_message,
-    #     to='whatsapp:+31644273034'
-    # )
+    message = client.messages.create(
+        from_='whatsapp:+14155238886',
+        body=body_message,
+        to='whatsapp:+31626654340'
+    )
+    message = client.messages.create(
+        from_='whatsapp:+14155238886',
+        body=body_message,
+        to='whatsapp:+31618420974'
+    )
 
 def main():
     # urls = pararius_get_urls_list()
     city = 'apeldoorn'
     result_number_last_known = check_last_known_number()
     result_number_funda = get_funda_data(city=city)
-    if result_number_funda > result_number_last_known:
-        update_table(result_number_funda,city=city)
-        whatsapp_message(result_number=result_number_funda, city=city)
+    if result_number_funda != result_number_last_known:
+        update_table(result_number_funda, city=city)
+        whatsapp_message(city=city)
 
 
 if __name__ == "__main__":
