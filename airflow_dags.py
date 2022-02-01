@@ -32,3 +32,15 @@ with DAG(
         task_id="pararius",
         bash_command=bash_command,
     )
+
+with DAG(
+        "funda_apeldoorn",
+        description="funda apeldoorn",
+        default_args=default_args,
+        schedule_interval=intervals["every_hour"],
+        start_date=datetime(2022, 2, 1, tzinfo=timezone("Europe/Amsterdam")),
+) as funda_apeldoorn_dag:
+    funda_apeldoorn_task = BashOperator(
+        task_id="funda_apeldoorn",
+        bash_command=bash_command,
+    )
