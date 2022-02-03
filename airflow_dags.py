@@ -18,6 +18,7 @@ intervals = {
     "daily_at_7am": "0 7 */1 * *",
     "every_3_days": "0 0 */3 * *",
     "every_hour": "0 */1 * * *",
+    "every_half_hour": "*/30 * * * *",
 }
 bash_command = "docker exec real_estate_docker python {{ task.task_id }}.py "
 
@@ -37,7 +38,7 @@ with DAG(
         "funda_apeldoorn",
         description="funda apeldoorn",
         default_args=default_args,
-        schedule_interval=intervals["every_hour"],
+        schedule_interval=intervals["every_half_hour"],
         start_date=datetime(2022, 2, 1, tzinfo=timezone("Europe/Amsterdam")),
 ) as funda_apeldoorn_dag:
     funda_apeldoorn_task = BashOperator(

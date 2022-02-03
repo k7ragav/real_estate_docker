@@ -1,6 +1,7 @@
 import mysql.connector
 import ssl
 from bs4 import BeautifulSoup
+import time
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -84,11 +85,13 @@ def whatsapp_message(city):
         body=body_message,
         to='whatsapp:+31626654343'
     )
+    time.sleep(10)
     message = client.messages.create(
         from_='whatsapp:+14155238886',
         body=body_message,
         to='whatsapp:+31626654340'
     )
+    time.sleep(10)
     message = client.messages.create(
         from_='whatsapp:+14155238886',
         body=body_message,
