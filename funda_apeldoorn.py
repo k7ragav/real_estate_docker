@@ -107,7 +107,7 @@ def main():
     if result_number_funda != result_number_last_known:
         update_table(result_number_funda, city=city)
         whatsapp_message(city=city)
-    send_message(message = "There might be some new addresses")
+        send_message(message = "There might be some new addresses")
 
 
 if __name__ == "__main__":
